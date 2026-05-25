@@ -1,0 +1,105 @@
+void main() {
+  print("=== TUGAS SESI 3: KONSTRUKTOR & ENKAPSULASI ===");
+  print("Nama: Serlin Selviana Giay | NIM: 251410030\n");
+
+  // 1. Menggunakan Generative / Default Constructor
+  print("1. Default Constructor:");
+  Mahasiswa mhs1 = Mahasiswa("Serlin Selviana Giay", "251410030", 85);
+  mhs1.tampilkanData();
+
+  // 2. Menggunakan Constant Constructor (Hemat memori/efisien)
+  print("\n2. Constant Constructor:");
+  const KategoriMateri kategori = KategoriMateri("Mobile Programming", 3);
+  print("   Materi: ${kategori.namaMateri} (${kategori.sks} SKS)");
+
+  // 3. Menggunakan Named Constructor (.dariMap)
+  print("\n3. Named Constructor (.dariMap):");
+  Map<String, dynamic> dataJson = {
+    "nama": "Budi Utomo",
+    "nim": "251410099",
+    "nilai": 90
+  };
+  Mahasiswa mhs2 = Mahasiswa.dariMap(dataJson);
+  mhs2.tampilkanData();
+
+  // 4. Menggunakan Named Constructor (.tanpaNama)
+  print("\n4. Named Constructor (.tanpaNama):");
+  Mahasiswa mhs3 = Mahasiswa.tanpaNama();
+  mhs3.tampilkanData();
+
+  // 5. Menguji Enkapsulasi (Getter dan Setter untuk Nilai Private)
+  print("\n5. Menguji Enkapsulasi (Getter/Setter):");
+  print("   Nilai awal mhs1: ${mhs1.nilaiMahasiswa} (Diambil via Getter)");
+  
+  // Mengubah nilai menggunakan Setter
+  mhs1.nilaiMahasiswa = 95; 
+  print("   Nilai setelah diubah via Setter: ${mhs1.nilaiMahasiswa}");
+
+  // Mencoba memasukkan nilai tidak valid (Validasi Setter)
+  print("   Mencoba mengeset nilai ke 150:");
+  mhs1.nilaiMahasiswa = 150; 
+}
+
+// =================================================================
+// DEKLARASI CLASS & IMPLEMENTASI MATERI (SESI 3)
+// =================================================================
+
+class Mahasiswa {
+  // Public Variables
+  String nama;
+  String nim;
+  
+  // Public Property dengan Initializer List (Poin 3)
+  String status;
+
+  // Private Variable (Poin 5: Ditandai dengan underscore '_')
+  double _nilai;
+
+  // A. Generative & Default Constructor (Poin 1 & Latihan a)
+  // Menggunakan Initializer List untuk mengatur status secara otomatis
+  Mahasiswa(this.nama, this.nim, this._nilai) : status = (_nilai >= 70) ? "Lulus" : "Remedial";
+
+  // B. Named Constructor: Mahasiswa.dariMap (Latihan b)
+  Mahasiswa.dariMap(Map<String, dynamic> map)
+      : nama = map["nama"],
+        nim = map["nim"],
+        _nilai = map["nilai"].toDouble(),
+        status = (map["nilai"] >= 70) ? "Lulus" : "Remedial";
+
+  // C. Named Constructor: Mahasiswa.tanpaNama (Latihan c)
+  Mahasiswa.tanpaNama()
+      : nama = "Belum Diisi",
+        nim = "000000000",
+        _nilai = 0.0,
+        status = "Belum Diketahui";
+
+  // D. Getter - Membaca data private _nilai (Poin 6)
+  double get nilaiMahasiswa => _nilai;
+
+  // E. Setter - Mengubah & memvalidasi data private _nilai (Poin 7)
+  set nilaiMahasiswa(double nilaiBaru) {
+    if (nilaiBaru >= 0 && nilaiBaru <= 100) {
+      _nilai = nilaiBaru;
+      // Update status kelulusan ulang jika nilai berubah
+      status = (_nilai >= 70) ? "Lulus" : "Remedial";
+    } else {
+      print("   [Peringatan]: Nilai harus berada di antara 0 sampai 100!");
+    }
+  }
+
+  // Metode untuk mencetak data ke konsol
+  void tampilkanData() {
+    print("   Nama   : $nama");
+    print("   NIM    : $nim");
+    print("   Status : $status");
+  }
+}
+
+// F. Constant Constructor (Poin 2)
+// Semua variabel wajib bersifat 'final' dan ditambahkan kata kunci 'const'
+class KategoriMateri {
+  final String namaMateri;
+  final int sks;
+
+  const KategoriMateri(this.namaMateri, this.sks);
+}
